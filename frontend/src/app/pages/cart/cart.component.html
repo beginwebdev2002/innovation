@@ -1,0 +1,22 @@
+<div class="p-8 text-black">
+  <h1 class="text-3xl font-bold mb-6">Корзина</h1>
+  @if (cart().length === 0) {
+    <p>Корзина пуста</p>
+  } @else {
+    <div class="flex flex-col gap-4">
+      @for (item of cart(); track item.id) {
+        <div class="flex justify-between items-center border p-4 rounded shadow">
+          <div>
+            <h3 class="font-bold">{{item.product.name}}</h3>
+            <p>Количество: {{item.quantity}}</p>
+          </div>
+          <div class="flex items-center gap-4">
+            <p class="font-bold">{{item.product.price * item.quantity | currency}}</p>
+            <button (click)="removeItem(item.productId)" class="text-red-500 hover:text-red-700">Удалить</button>
+          </div>
+        </div>
+      }
+      <button (click)="checkout()" class="bg-green-500 text-white p-3 rounded mt-4 hover:bg-green-600 self-end">Оформить заказ</button>
+    </div>
+  }
+</div>
