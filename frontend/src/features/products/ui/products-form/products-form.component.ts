@@ -21,6 +21,7 @@ export class ProductsFormComponent implements OnInit {
   readonly mode = computed(() => this.editingProduct() ? 'edit' : 'create');
   readonly displayImageUrl = 
     computed(() => this.productFormModel().imageUrl ? apiUrlMaker(this.productFormModel().imageUrl) : null);
+  readonly imageFile = signal<File | null>(null);
 
   constructor() {
     effect(() => {
@@ -66,7 +67,8 @@ export class ProductsFormComponent implements OnInit {
     reader.onload = (e) => {
       const url = e.target?.result as string;
       this.productFormModel
-        .update(prev => ({ ...prev, image: file, imageUrl: url }));
+        .update(prev => ({ ...prev, imageUrl: url }));
+      this.imageFile.set(file);
     };
     reader.readAsDataURL(file);
   }
@@ -74,7 +76,7 @@ export class ProductsFormComponent implements OnInit {
   private setUpdateState(){
     const editingProduct = this.editingProduct();
     if (editingProduct) {
-      this.productFormModel.set({...editingProduct, image: null}); 
+      this.productFormModel.set({...editingProduct}); 
     } else {
       this.clearForm();
     }
@@ -87,8 +89,8 @@ export class ProductsFormComponent implements OnInit {
     if (this.productFormModel().category) {
       formData.append('category', this.productFormModel().category);
     }
-    if (this.productFormModel().image) {
-      formData.append('image', this.productFormModel().image as File);
+    if (this.imageFile()) {
+      formData.append('image', this.imageFile()!);
     }
     return formData;
   }

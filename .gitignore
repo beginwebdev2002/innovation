@@ -6,4 +6,4 @@
 /backend/dist
 /backend/.env
 /backend/public
-
+/backend/generated

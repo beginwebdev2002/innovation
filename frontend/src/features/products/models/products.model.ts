@@ -12,7 +12,6 @@ export interface Product {
 }
 
 export interface ProductFormModel extends Omit<Product, 'id' | 'createdAt' | 'updatedAt'> {
-    image:  File | null;
 }
 
 export const initialProductFormModel: ProductFormModel = {
@@ -20,8 +19,7 @@ export const initialProductFormModel: ProductFormModel = {
     price: 1200,
     category: 'Electronics',
     description: 'A great phone',
-    imageUrl: '',
-    image: null
+    imageUrl: ''
 }
 
 export const productValidationSchema = schema<ProductFormModel>((product) => {
@@ -37,5 +35,4 @@ export const productValidationSchema = schema<ProductFormModel>((product) => {
     required(product.description, {message: 'Введите описание товара'});
     maxLength(product.description, 300, {message: 'Описание товара должно быть не длиннее 300 символов'});
 
-    required(product.image, {message: 'Выберите изображение товара'});
 });
