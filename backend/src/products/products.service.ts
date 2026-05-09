@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
+import { unlink } from 'fs';
+import { join } from 'path';
 
 @Injectable()
 export class ProductsService {
@@ -25,8 +27,22 @@ export class ProductsService {
     });
   }
 
-  update(id: number, data: any) {
-    return this.prisma.product.update({ where: { id }, data });
+  async update(id: number, data: any) {
+    // If a new image is provided, delete the old one from disk
+    if (data.imageUrl) {
+      const existing = await this.prisma.product.findUnique({ where: { id } });
+      if (existing?.imageUrl && existing.imageUrl !== data.imageUrl) {
+        const oldFilePath = join(process.cwd(), 'public', existing.imageUrl);
+        unlink(oldFilePath, (err) => {
+          if (err) console.warn(`Could not delete old image: ${oldFilePath}`, err.message);
+        });
+      }
+    }
+
+    return this.prisma.product.update({
+      where: { id },
+      data: { ...data, ...(data.price !== undefined ? { price: parseFloat(data.price) } : {}) },
+    });
   }
 
   remove(id: number) {

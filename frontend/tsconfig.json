@@ -17,11 +17,12 @@
     "baseUrl": "./",
     "paths": {
       "@app/*": ["src/app/*"],
-      "@pages/*": ["src/app/pages/*"],
-      "@widgets/*": ["src/app/widgets/*"],
-      "@features/*": ["src/app/features/*"],
-      "@entities/*": ["src/app/entities/*"],
-      "@shared/*": ["src/app/shared/*"]
+      "@pages/*": ["src/pages/*"],
+      "@widgets/*": ["src/widgets/*"],
+      "@features/*": ["src/features/*"],
+      "@entities/*": ["src/entities/*"],
+      "@shared/*": ["src/shared/*"],
+      "@environments/*": ["src/environments/*"]
     }
   },
   "angularCompilerOptions": {

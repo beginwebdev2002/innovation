@@ -9,7 +9,51 @@
   "projects": {
     "frontend": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:component": {
+          "type": "component",
+          "path": "src",
+          "style": "scss",
+          "changeDetection": "OnPush",
+          "displayBlock": true
+        },
+        "@schematics/angular:guard": {
+          "path": "src"
+        },
+        "@schematics/angular:pipe": {
+          "path": "src"
+        },
+        "@schematics/angular:service": {
+          "type": "service",
+          "path": "src",
+          
+        },
+        "@schematics/angular:resolver": {
+          "path": "src"
+        },
+        "@schematics/angular:directive": {
+          "path": "src"
+        },
+        "@schematics/angular:module": {
+          "path": "src",
+          "type": "module"
+        },
+        "@schematics/angular:interface": {
+          "path": "src",
+          "type": "interface"
+        },
+        "@schematics/angular:class": {
+          "path": "src",
+          "type": "class"
+        },
+        "@schematics/angular:enum": {
+          "path": "src",
+          "type": "enum"
+        },
+        "@schematics/angular:interceptor": {
+          "path": "src"
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -31,6 +75,12 @@
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",
