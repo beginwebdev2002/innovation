@@ -3,6 +3,7 @@ import { UserStore } from '@entities/user/user.store';
 import { tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { apiUrlMaker } from '@shared/utils';
+import { AuthResponse, SignInModel, SignUpModel, User } from './models/auth.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -12,9 +13,9 @@ export class AuthService {
   private signupEndpoint = signal(apiUrlMaker('auth/signup').href);
   private profileEndpoint = signal(apiUrlMaker('auth/me').href);
 
-  signin(credentials: any) {
-    return this.http.post(this.signinEndpoint(), credentials).pipe(
-      tap((res: any) => {
+  signin(credentials: SignInModel) {
+    return this.http.post<AuthResponse>(this.signinEndpoint(), credentials).pipe(
+      tap((res: AuthResponse) => {
         localStorage.setItem('access_token', res.access_token);
         localStorage.setItem('refresh_token', res.refresh_token);
         this.userStore.setUser(res.user);
@@ -22,9 +23,9 @@ export class AuthService {
     );
   }
 
-  signup(data: any) {
-    return this.http.post(this.signupEndpoint(), data).pipe(
-      tap((res: any) => {
+  signup(data: SignUpModel) {
+    return this.http.post<AuthResponse>(this.signupEndpoint(), data).pipe(
+      tap((res: AuthResponse) => {
         localStorage.setItem('access_token', res.access_token);
         localStorage.setItem('refresh_token', res.refresh_token);
         this.userStore.setUser(res.user);
@@ -33,8 +34,8 @@ export class AuthService {
   }
 
   getProfile() {
-    return this.http.get(this.profileEndpoint()).pipe(
-      tap((user: any) => this.userStore.setUser(user))
+    return this.http.get<User>(this.profileEndpoint()).pipe(
+      tap((user: User) => this.userStore.setUser(user))
     );
   }
 }

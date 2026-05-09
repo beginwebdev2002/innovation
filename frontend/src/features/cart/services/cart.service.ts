@@ -6,19 +6,19 @@ import { Observable } from 'rxjs';
 export class CartService {
   private http = inject(HttpClient);
 
-  get<T = any>(url: string, options?: any): Observable<T> {
+  get<T = unknown>(url: string, options?: Record<string, unknown>): Observable<T> {
     return this.http.get<T>(url, options) as Observable<T>;
   }
 
-  post<T = any>(url: string, body: any, options?: any): Observable<T> {
+  post<T = unknown>(url: string, body: unknown, options?: Record<string, unknown>): Observable<T> {
     return this.http.post<T>(url, body, options) as Observable<T>;
   }
 
-  put<T = any>(url: string, body: any, options?: any): Observable<T> {
+  put<T = unknown>(url: string, body: unknown, options?: Record<string, unknown>): Observable<T> {
     return this.http.put<T>(url, body, options) as Observable<T>;
   }
 
-  delete<T = any>(url: string, options?: any): Observable<T> {
+  delete<T = unknown>(url: string, options?: Record<string, unknown>): Observable<T> {
     return this.http.delete<T>(url, options) as Observable<T>;
   }
 }

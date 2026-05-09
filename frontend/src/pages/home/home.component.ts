@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
-import { ProductsApiService } from '@features/products';
+import { Product, ProductsApiService } from '@features/products';
 import { CartService } from '@features/cart';
 import { UserStore } from '@entities/user/user.store';
 import { environment } from '@environments/environment';
@@ -20,18 +20,18 @@ export class HomeComponent implements OnInit {
   private cartEndpoint = signal(apiUrlMaker('cart').href);
   apiUrl = signal(environment.apiUrl);
 
-  products = signal<any[]>([]);
+  products = signal<Product[]>([]);
   search = signal('');
 
   ngOnInit() {
     this.loadProducts();
   }
 
-  updateSearch(e: any) { this.search.set(e.target.value); }
+  updateSearch(e: Event) { this.search.set((e.target as HTMLInputElement).value); }
 
   loadProducts() {
     this.productsService.get('products', { search: this.search() })
-    .subscribe((data: any) => this.products.set(data));
+    .subscribe((data: Product[]) => this.products.set(data));
   }
 
   addToCart(productId: number) {

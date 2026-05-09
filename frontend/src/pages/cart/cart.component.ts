@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
-import { CartService } from '@features/cart';
+import { CartItem, CartService } from '@features/cart';
 import { apiUrlMaker } from '@shared/utils';
 
 
@@ -13,7 +13,7 @@ import { apiUrlMaker } from '@shared/utils';
 })
 export class CartComponent implements OnInit {
   cartService = inject(CartService);
-  cart = signal<any[]>([]);
+  cart = signal<CartItem[]>([]);
   private getCartEndpoint = signal(apiUrlMaker('cart').href);
   private checkoutEndpoint = signal(apiUrlMaker('orders/checkout').href);
 
@@ -22,7 +22,7 @@ export class CartComponent implements OnInit {
   }
 
   loadCart() {
-    this.cartService.get(this.getCartEndpoint()).subscribe((data: any[]) => this.cart.set(data));
+    this.cartService.get<CartItem[]>(this.getCartEndpoint()).subscribe((data) => this.cart.set(data));
   }
 
   removeItem(productId: number) {

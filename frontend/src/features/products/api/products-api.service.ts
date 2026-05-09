@@ -8,7 +8,7 @@ import { Product } from '@features/products/models/products.model';
 export class ProductsApiService {
   private http = inject(HttpClient);
 
-  get(url: string, params?: any): Observable<Product[]> {
+  get(url: string, params?: Record<string, string | number | boolean | readonly (string | number | boolean)[]>): Observable<Product[]> {
     return this.http.get<Product[]>(`${environment.apiUrl}/${url}`, { params }); 
   }
 

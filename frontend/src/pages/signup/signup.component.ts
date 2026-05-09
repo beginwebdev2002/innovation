@@ -1,4 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { form, FormField } from '@angular/forms/signals';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '@features/auth/auth.service';
@@ -28,7 +29,7 @@ export class SignupComponent implements OnInit {
         this.clearForm();
         this.router.navigate(['/'])
       },
-      error: (err: any) => alert(err.error.message)
+      error: (err: HttpErrorResponse) => alert(err.error.message)
     });
   }
 
