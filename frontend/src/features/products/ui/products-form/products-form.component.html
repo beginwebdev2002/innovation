@@ -10,7 +10,7 @@
 
       <div class="flex flex-col gap-2">
         <label class="text-sm text-gray-600">Изображение товара</label>
-        <input type="file" accept="image/*" [formField]="productForm.image" (change)="onFileSelected($event)" class="border p-2 rounded text-sm" />
+        <input type="file" accept="image/*"  (change)="onFileSelected($event)" class="border p-2 rounded text-sm" />
         @if (productFormModel().imageUrl) {
           <img [src]="productFormModel().imageUrl" alt="Preview" class="w-24 h-24 object-cover rounded border" />
         }
@@ -18,7 +18,14 @@
     </div>
 
     <div class="mt-4 flex gap-3">
-      <button (click)="saveProduct()" class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">
+      <button (click)="saveProduct()" [disabled]="productForm().invalid()" 
+      class="
+      bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600
+      disabled:bg-gray-400 disabled:cursor-not-allowed
+      disabled:opacity-50
+      disabled:hover:bg-gray-400
+      "
+      >
         {{ mode() === 'edit' ? 'Сохранить изменения' : 'Добавить товар' }}
       </button>
       @if (mode() === 'edit') {

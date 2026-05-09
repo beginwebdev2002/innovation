@@ -12,7 +12,7 @@ export interface Product {
 }
 
 export interface ProductFormModel extends Omit<Product, 'id' | 'createdAt' | 'updatedAt'> {
-    image:  string;
+    image:  File | null;
 }
 
 export const initialProductFormModel: ProductFormModel = {
@@ -21,7 +21,7 @@ export const initialProductFormModel: ProductFormModel = {
     category: '',
     description: '',
     imageUrl: '',
-    image: ''
+    image: null
 }
 
 export function productValidationSchema(schema: any) {
