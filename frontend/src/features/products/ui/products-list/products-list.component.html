@@ -1,0 +1,28 @@
+<div class="flex flex-col gap-4">
+    @for (product of products(); track product.id) {
+      <div class="flex justify-between items-center border p-4 rounded shadow"
+           [class.ring-2]=""
+           [class.ring-blue-400]="">
+        <div class="flex items-center gap-4">
+          @if (product.imageUrl) {
+            <img [src]="apiUrl + product.imageUrl" alt="product" class="w-16 h-16 object-cover rounded" />
+          } @else {
+            <div class="w-16 h-16 bg-gray-200 rounded flex items-center justify-center text-gray-400 text-xs">Нет фото</div>
+          }
+          <div>
+            <p class="font-bold">{{product.name}}</p>
+            <p class="text-sm text-gray-500">{{product.category}}</p>
+            <p class="text-sm text-gray-600">{{product.description}} — {{product.price | currency}}</p>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <button (click)="startEdit(product)" class="bg-yellow-400 text-white px-3 py-1 rounded hover:bg-yellow-500">
+            Редактировать
+          </button>
+          <button (click)="onRemoveProduct(product.id)" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
+            Удалить
+          </button>
+        </div>
+      </div>
+    }
+  </div>

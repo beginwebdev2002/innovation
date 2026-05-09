@@ -1,7 +1,7 @@
 import { maxLength, min, required } from "@angular/forms/signals";
 
 export interface Product {
-    id: string;
+    id: number;
     name: string;
     price: number;
     category: string;
@@ -16,10 +16,10 @@ export interface ProductFormModel extends Omit<Product, 'id' | 'createdAt' | 'up
 }
 
 export const initialProductFormModel: ProductFormModel = {
-    name: '',
-    price: 0,
-    category: '',
-    description: '',
+    name: 'IPhone 12 Pro',
+    price: 1200,
+    category: 'Electronics',
+    description: 'A great phone',
     imageUrl: '',
     image: null
 }

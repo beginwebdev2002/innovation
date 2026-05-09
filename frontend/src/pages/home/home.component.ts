@@ -2,7 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { ApiService } from '@shared/api/api.service';
 import { UserStore } from '@entities/user/user.store';
-import { environment } from '@shared/config/environment';
+import { environment } from '@environments/environment';
 
 @Component({
   standalone: true,

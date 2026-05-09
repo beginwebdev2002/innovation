@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, output, signal } from '@angular/core';
 import { form, FormField } from '@angular/forms/signals';
 import { ProductsApiService } from '@features/products/api/products-api.service';
 import { initialProductFormModel, ProductFormModel, productValidationSchema } from '@features/products/models/products.model';
@@ -12,6 +12,8 @@ import { initialProductFormModel, ProductFormModel, productValidationSchema } fr
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductsFormComponent implements OnInit {
+  readonly save = output<FormData>();
+  readonly edit = output<ProductFormModel>();
   mode = signal<'edit' | 'create'>('create');
   readonly productFormModel = signal<ProductFormModel>(initialProductFormModel);
   readonly productForm = form(this.productFormModel, productValidationSchema);
@@ -41,13 +43,12 @@ export class ProductsFormComponent implements OnInit {
     if (this.productFormModel().image) {
       formData.append('image', this.productFormModel().image as File);
     }
-    this.productsApiService.postForm('products', formData).subscribe(() => {
-      this.loadProducts();
-      this.cancelEdit();
-    });
+    this.save.emit(formData);
   }
   
-  updateProduct() {}
+  updateProduct() {
+    this.edit.emit(this.productFormModel());
+  }
    cancelEdit() {
     this.mode.set('create');
     this.productFormModel.set(initialProductFormModel);
@@ -60,11 +61,9 @@ export class ProductsFormComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = (e) => {
         const url = e.target?.result as string;
-        // @ts-ignore
         this.productFormModel.update(prev => ({ ...prev, image: file, imageUrl: url }));
       };
       reader.readAsDataURL(file);
     }
   }
-  private loadProducts() {}
 }

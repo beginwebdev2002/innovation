@@ -1,32 +1,34 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { environment } from '@environments/environment';
+import { Product } from '@features/products/models/products.model';
 
 @Injectable()
 export class ProductsApiService {
   private http = inject(HttpClient);
 
-  get(url: string, params?: any) {
-    return this.http.get(`${environment.apiUrl}/${url}`, { params }); 
+  get(url: string, params?: HttpParams): Observable<Product[]> {
+    return this.http.get<Product[]>(`${environment.apiUrl}/${url}`, { params }); 
   }
 
-  post(url: string, body: any) { 
-    return this.http.post(`${environment.apiUrl}/${url}`, body); 
+  post(url: string, body: Product): Observable<Product> { 
+    return this.http.post<Product>(`${environment.apiUrl}/${url}`, body); 
   }
 
-  postForm(url: string, formData: FormData) { 
-    return this.http.post(`${environment.apiUrl}/${url}`, formData); 
+  postForm(url: string, formData: FormData): Observable<Product> { 
+    return this.http.post<Product>(`${environment.apiUrl}/${url}`, formData); 
   }
 
-  put(url: string, body: any) { 
-    return this.http.put(`${environment.apiUrl}/${url}`, body); 
+  put(url: string, body: Product): Observable<Product> { 
+    return this.http.put<Product>(`${environment.apiUrl}/${url}`, body); 
   }
 
-  putForm(url: string, formData: FormData) { 
-    return this.http.put(`${environment.apiUrl}/${url}`, formData); 
+  putForm(url: string, formData: FormData): Observable<Product> { 
+    return this.http.put<Product>(`${environment.apiUrl}/${url}`, formData); 
   }
 
-  delete(url: string) { 
-    return this.http.delete(`${environment.apiUrl}/${url}`); 
+  delete(url: string): Observable<Product> { 
+    return this.http.delete<Product>(`${environment.apiUrl}/${url}`); 
   }
 }

@@ -1,67 +1,6 @@
 <div class="p-8 text-black">
   <h1 class="text-3xl font-bold mb-6 text-red-600">Админ Панель</h1>
 
-  <!-- Форма добавления / редактирования -->
-  <!-- <div class="bg-gray-100 p-4 rounded mb-8">
-    <h2 class="text-xl font-bold mb-4">
-      {{ mode === 'edit' ? 'Редактировать товар' : 'Добавить новый товар' }}
-    </h2>
-    <div class="grid grid-cols-2 gap-4">
-      <input [(ngModel)]="productForm.name" placeholder="Название" class="border p-2 rounded" />
-      <input [(ngModel)]="productForm.category" placeholder="Категория" class="border p-2 rounded" />
-      <input [(ngModel)]="productForm.description" placeholder="Описание" class="border p-2 rounded col-span-2" />
-      <input [(ngModel)]="productForm.price" type="number" placeholder="Цена" class="border p-2 rounded" />
-
-      <div class="flex flex-col gap-2">
-        <label class="text-sm text-gray-600">Изображение товара</label>
-        <input type="file" accept="image/*" (change)="onFileSelected($event)" class="border p-2 rounded text-sm" />
-        @if (previewUrl) {
-          <img [src]="previewUrl" alt="Preview" class="w-24 h-24 object-cover rounded border" />
-        }
-      </div>
-    </div>
-
-    <div class="mt-4 flex gap-3">
-      <button (click)="saveProduct()" class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">
-        {{ mode === 'edit' ? 'Сохранить изменения' : 'Добавить товар' }}
-      </button>
-      @if (mode === 'edit') {
-        <button (click)="cancelEdit()" class="bg-gray-400 text-white px-6 py-2 rounded hover:bg-gray-500">
-          Отмена
-        </button>
-      }
-    </div>
-  </div> -->
-
-
-  <app-products-form></app-products-form>
-  <!-- Список товаров -->
-  <div class="flex flex-col gap-4">
-    @for (product of products(); track product.id) {
-      <div class="flex justify-between items-center border p-4 rounded shadow"
-           [class.ring-2]="editingProductId === product.id"
-           [class.ring-blue-400]="editingProductId === product.id">
-        <div class="flex items-center gap-4">
-          @if (product.imageUrl) {
-            <img [src]="apiUrl + product.imageUrl" alt="product" class="w-16 h-16 object-cover rounded" />
-          } @else {
-            <div class="w-16 h-16 bg-gray-200 rounded flex items-center justify-center text-gray-400 text-xs">Нет фото</div>
-          }
-          <div>
-            <p class="font-bold">{{product.name}}</p>
-            <p class="text-sm text-gray-500">{{product.category}}</p>
-            <p class="text-sm text-gray-600">{{product.description}} — {{product.price | currency}}</p>
-          </div>
-        </div>
-        <div class="flex gap-2">
-          <button (click)="startEdit(product)" class="bg-yellow-400 text-white px-3 py-1 rounded hover:bg-yellow-500">
-            Редактировать
-          </button>
-          <button (click)="removeProduct(product.id)" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
-            Удалить
-          </button>
-        </div>
-      </div>
-    }
-  </div>
+  <app-products-form (save)="onSaveProduct($event)"></app-products-form>
+  <app-products-list (remove)="onRemoveProduct($event)"  [products]="products()"></app-products-list>
 </div>
