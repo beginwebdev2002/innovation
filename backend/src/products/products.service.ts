@@ -7,12 +7,26 @@ import { join } from 'path';
 export class ProductsService {
   constructor(private prisma: PrismaService) {}
 
-  findAll(search?: string, category?: string, minPrice?: number, maxPrice?: number) {
+  findAll(
+    search?: string,
+    category?: string,
+    minPrice?: number,
+    maxPrice?: number,
+  ) {
     return this.prisma.product.findMany({
       where: {
-        ...(category ? { category: { equals: category, mode: 'insensitive' } } : {}),
+        ...(category
+          ? { category: { equals: category, mode: 'insensitive' } }
+          : {}),
         ...(search ? { name: { contains: search, mode: 'insensitive' } } : {}),
-        ...(minPrice || maxPrice ? { price: { gte: minPrice ? +minPrice : 0, lte: maxPrice ? +maxPrice : 9999999 } } : {}),
+        ...(minPrice || maxPrice
+          ? {
+              price: {
+                gte: minPrice ? +minPrice : 0,
+                lte: maxPrice ? +maxPrice : 9999999,
+              },
+            }
+          : {}),
       },
     });
   }
@@ -34,14 +48,21 @@ export class ProductsService {
       if (existing?.imageUrl && existing.imageUrl !== data.imageUrl) {
         const oldFilePath = join(process.cwd(), 'public', existing.imageUrl);
         unlink(oldFilePath, (err) => {
-          if (err) console.warn(`Could not delete old image: ${oldFilePath}`, err.message);
+          if (err)
+            console.warn(
+              `Could not delete old image: ${oldFilePath}`,
+              err.message,
+            );
         });
       }
     }
 
     return this.prisma.product.update({
       where: { id },
-      data: { ...data, ...(data.price !== undefined ? { price: parseFloat(data.price) } : {}) },
+      data: {
+        ...data,
+        ...(data.price !== undefined ? { price: parseFloat(data.price) } : {}),
+      },
     });
   }
 

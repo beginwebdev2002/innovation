@@ -5,7 +5,10 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import 'dotenv/config';
 
 @Injectable()
-export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
+export class PrismaService
+  extends PrismaClient
+  implements OnModuleInit, OnModuleDestroy
+{
   private pgPool: Pool;
 
   constructor() {

@@ -39,7 +39,8 @@ export class AuthService {
 
   async refreshTokens(userId: number, rt: string) {
     const user = await this.usersService.findById(userId);
-    if (!user || !user.refreshToken) throw new UnauthorizedException('Access Denied');
+    if (!user || !user.refreshToken)
+      throw new UnauthorizedException('Access Denied');
 
     const rtMatches = await bcrypt.compare(rt, user.refreshToken);
     if (!rtMatches) throw new UnauthorizedException('Access Denied');
@@ -57,7 +58,10 @@ export class AuthService {
       ),
       this.jwtService.signAsync(
         { sub: userId, email, role },
-        { secret: process.env.JWT_REFRESH_SECRET || 'refresh-secret', expiresIn: '7d' },
+        {
+          secret: process.env.JWT_REFRESH_SECRET || 'refresh-secret',
+          expiresIn: '7d',
+        },
       ),
     ]);
 
