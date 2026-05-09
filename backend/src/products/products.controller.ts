@@ -1,4 +1,17 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Query, ParseIntPipe, UploadedFile, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  UseGuards,
+  Query,
+  ParseIntPipe,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
@@ -76,7 +89,11 @@ export class ProductsController {
       limits: { fileSize: 5 * 1024 * 1024 },
     }),
   )
-  update(@Param('id', ParseIntPipe) id: number, @Body() data: any, @UploadedFile() file?: Express.Multer.File) {
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() data: any,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
     const imageUrl = file ? `/uploads/${file.filename}` : undefined;
     const updateData = imageUrl ? { ...data, imageUrl } : data;
     return this.productsService.update(id, updateData);

@@ -6,12 +6,12 @@ export const routes: Routes = [
     loadComponent: () => import('@pages/home/home.component').then(m => m.HomeComponent)
   },
   {
-    path: 'login',
-    loadComponent: () => import('@pages/login/login.component').then(m => m.LoginComponent)
+    path: 'signin',
+    loadComponent: () => import('@pages/signin/signin.component').then(m => m.SigninComponent)
   },
   {
-    path: 'register',
-    loadComponent: () => import('@pages/register/register.component').then(m => m.RegisterComponent)
+    path: 'signup',
+    loadComponent: () => import('@pages/signup/signup.component').then(m => m.SignupComponent)
   },
   {
     path: 'cart',

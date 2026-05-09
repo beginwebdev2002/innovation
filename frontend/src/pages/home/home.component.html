@@ -10,7 +10,7 @@
     @for (product of products(); track product.id) {
       <div class="border rounded-lg shadow hover:shadow-lg transition flex flex-col overflow-hidden">
         @if (product.imageUrl) {
-          <img [src]="apiUrl + product.imageUrl" alt="{{product.name}}" class="w-full h-48 object-cover" />
+          <img [src]="apiUrl() + product.imageUrl" [alt]="product.name" class="w-full h-48 object-cover" />
         } @else {
           <div class="w-full h-48 bg-gray-100 flex items-center justify-center text-gray-400">Нет фото</div>
         }

@@ -12,20 +12,20 @@ export class AuthService {
 
   async validateUser(email: string, pass: string): Promise<any> {
     const user = await this.usersService.findByEmail(email);
-    if (user && await bcrypt.compare(pass, user.password)) {
+    if (user && (await bcrypt.compare(pass, user.password))) {
       const { password, refreshToken, ...result } = user;
       return result;
     }
     return null;
   }
 
-  async login(user: any) {
+  async signin(user: any) {
     const tokens = await this.getTokens(user.id, user.email, user.role);
     await this.usersService.updateRefreshToken(user.id, tokens.refresh_token);
     return { ...tokens, user };
   }
 
-  async register(data: any) {
+  async signup(data: any) {
     const user = await this.usersService.create(data);
     const tokens = await this.getTokens(user.id, user.email, user.role);
     await this.usersService.updateRefreshToken(user.id, tokens.refresh_token);
@@ -53,7 +53,7 @@ export class AuthService {
     const [at, rt] = await Promise.all([
       this.jwtService.signAsync(
         { sub: userId, email, role },
-        { secret: process.env.JWT_SECRET || 'access-secret', expiresIn: '15m' },
+        { secret: process.env.JWT_SECRET || 'access-secret', expiresIn: '7d' },
       ),
       this.jwtService.signAsync(
         { sub: userId, email, role },

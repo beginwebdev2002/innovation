@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Product, ProductFormModel, ProductsFormComponent } from "@features/products";
+import { Product, ProductsFormComponent } from "@features/products";
 import { ProductsApiService } from '@features/products/api/products-api.service';
 import { ProductsListComponent } from '@features/products/ui/products-list/products-list.component';
 
@@ -8,14 +8,13 @@ import { ProductsListComponent } from '@features/products/ui/products-list/produ
   selector: 'app-admin',
   standalone: true,
   providers: [ProductsApiService],
-  imports: [FormsModule,  ProductsFormComponent, ProductsListComponent],
+  imports: [FormsModule, ProductsFormComponent, ProductsListComponent],
   templateUrl: './admin.component.html'
 })
 export class AdminComponent implements OnInit {
-  
-  
+  editingProduct = signal<Product | null>(null);
   products = signal<Product[]>([]);
-  
+
   private productsApiService = inject(ProductsApiService);
 
   ngOnInit() {
@@ -29,15 +28,24 @@ export class AdminComponent implements OnInit {
   }
 
   onSaveProduct(formData: FormData) {
-    this.productsApiService.postForm('products', formData)
+    this.productsApiService.post('products', formData)
     .subscribe((data: Product) => {
       this.updateAddState(data);
     });
   }
 
- 
+  onSaveEdittedProduct(formData: FormData) {
+    const product = this.editingProduct();
+    if (!product) return;
+    this.productsApiService.put(`products/${product.id}`, formData)
+    .subscribe((data: Product) => {
+      this.updateEditState(data);
+      this.editingProduct.set(null);
+    });
+  }
 
   onEditProduct(product: Product) {
+    this.editingProduct.set(product);
   }
 
   onRemoveProduct(id: number) {

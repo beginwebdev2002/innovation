@@ -1,6 +1,14 @@
 <div class="p-8 text-black">
   <h1 class="text-3xl font-bold mb-6 text-red-600">Админ Панель</h1>
 
-  <app-products-form (save)="onSaveProduct($event)"></app-products-form>
-  <app-products-list (remove)="onRemoveProduct($event)"  [products]="products()"></app-products-list>
+  <app-products-form 
+    (save)="onSaveProduct($event)"
+    (saveEdittedProduct)="onSaveEdittedProduct($event)"
+    [editingProduct]="editingProduct()"
+  />
+  <app-products-list 
+    (edit)="onEditProduct($event)" 
+    (remove)="onRemoveProduct($event)" 
+    [products]="products()"
+  />
 </div>

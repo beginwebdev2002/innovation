@@ -16,8 +16,8 @@ export class AppComponent implements OnInit {
     if (localStorage.getItem('access_token')) {
       this.authService.getProfile().subscribe({
         error: () => {
-          localStorage.removeItem('access_token');
-          localStorage.removeItem('refresh_token');
+          // localStorage.removeItem('access_token');
+          // localStorage.removeItem('refresh_token');
         }
       });
     }

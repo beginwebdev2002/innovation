@@ -1,4 +1,4 @@
-import { maxLength, min, required } from "@angular/forms/signals";
+import { maxLength, min, required, schema } from "@angular/forms/signals";
 
 export interface Product {
     id: number;
@@ -24,18 +24,18 @@ export const initialProductFormModel: ProductFormModel = {
     image: null
 }
 
-export function productValidationSchema(schema: any) {
-    required(schema.name);
-    maxLength(schema.name, 50);
+export const productValidationSchema = schema<ProductFormModel>((product) => {
+    required(product.name, {message: 'Введите название товара'});
+    maxLength(product.name, 50, {message: 'Название товара должно быть не длиннее 50 символов'});
 
-    required(schema.price);
-    min(schema.price, 0);
+    required(product.price, {message: 'Введите цену товара'});
+    min(product.price, 0, {message: 'Цена товара должна быть не меньше 0'});
 
-    required(schema.category);
-    maxLength(schema.category, 50);
+    required(product.category, {message: 'Введите категорию товара'});
+    maxLength(product.category, 50, {message: 'Категория товара должна быть не длиннее 50 символов'});
 
-    required(schema.description);
-    maxLength(schema.description, 300);
+    required(product.description, {message: 'Введите описание товара'});
+    maxLength(product.description, 300, {message: 'Описание товара должно быть не длиннее 300 символов'});
 
-    required(schema.imageUrl); 
-}
+    required(product.image, {message: 'Выберите изображение товара'});
+});

@@ -1,18 +1,24 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
-import { ApiService } from '@shared/api/api.service';
+import { ProductsApiService } from '@features/products';
+import { CartService } from '@features/cart';
 import { UserStore } from '@entities/user/user.store';
 import { environment } from '@environments/environment';
+import { apiUrlMaker } from '@shared/utils';
 
 @Component({
+  selector: 'app-home',
   standalone: true,
   imports: [CurrencyPipe],
+  providers: [ProductsApiService, CartService],
   templateUrl: './home.component.html'
 })
 export class HomeComponent implements OnInit {
-  api = inject(ApiService);
+  private productsService = inject(ProductsApiService);
+  private cartService = inject(CartService);
   userStore = inject(UserStore);
-  apiUrl = environment.apiUrl;
+  private cartEndpoint = signal(apiUrlMaker('cart').href);
+  apiUrl = signal(environment.apiUrl);
 
   products = signal<any[]>([]);
   search = signal('');
@@ -24,11 +30,13 @@ export class HomeComponent implements OnInit {
   updateSearch(e: any) { this.search.set(e.target.value); }
 
   loadProducts() {
-    this.api.get('products', { search: this.search() }).subscribe((data: any) => this.products.set(data));
+    this.productsService.get('products', { search: this.search() })
+    .subscribe((data: any) => this.products.set(data));
   }
 
   addToCart(productId: number) {
-    this.api.post('cart', { productId, quantity: 1 }).subscribe(() => {
+    this.cartService.post(this.cartEndpoint(), { productId, quantity: 1 })
+    .subscribe(() => {
       alert('Добавлено в корзину');
     });
   }

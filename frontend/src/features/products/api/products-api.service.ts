@@ -8,24 +8,16 @@ import { Product } from '@features/products/models/products.model';
 export class ProductsApiService {
   private http = inject(HttpClient);
 
-  get(url: string, params?: HttpParams): Observable<Product[]> {
+  get(url: string, params?: any): Observable<Product[]> {
     return this.http.get<Product[]>(`${environment.apiUrl}/${url}`, { params }); 
   }
 
-  post(url: string, body: Product): Observable<Product> { 
+  post(url: string, body: FormData): Observable<Product> { 
     return this.http.post<Product>(`${environment.apiUrl}/${url}`, body); 
   }
 
-  postForm(url: string, formData: FormData): Observable<Product> { 
-    return this.http.post<Product>(`${environment.apiUrl}/${url}`, formData); 
-  }
-
-  put(url: string, body: Product): Observable<Product> { 
+  put(url: string, body: FormData): Observable<Product> { 
     return this.http.put<Product>(`${environment.apiUrl}/${url}`, body); 
-  }
-
-  putForm(url: string, formData: FormData): Observable<Product> { 
-    return this.http.put<Product>(`${environment.apiUrl}/${url}`, formData); 
   }
 
   delete(url: string): Observable<Product> { 

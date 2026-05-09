@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, input, OnInit, output, signal } from '@angular/core';
 import { form, FormField } from '@angular/forms/signals';
 import { ProductsApiService } from '@features/products/api/products-api.service';
-import { initialProductFormModel, ProductFormModel, productValidationSchema } from '@features/products/models/products.model';
+import { initialProductFormModel, Product, ProductFormModel, productValidationSchema } from '@features/products/models/products.model';
+import { apiUrlMaker } from '@shared/utils';
 
 @Component({
   selector: 'app-products-form',
@@ -13,15 +14,21 @@ import { initialProductFormModel, ProductFormModel, productValidationSchema } fr
 })
 export class ProductsFormComponent implements OnInit {
   readonly save = output<FormData>();
-  readonly edit = output<ProductFormModel>();
-  mode = signal<'edit' | 'create'>('create');
+  readonly saveEdittedProduct = output<FormData>();
+  readonly editingProduct = input<Product | null>(null);
   readonly productFormModel = signal<ProductFormModel>(initialProductFormModel);
   readonly productForm = form(this.productFormModel, productValidationSchema);
-  private readonly productsApiService = inject(ProductsApiService);
+  readonly mode = computed(() => this.editingProduct() ? 'edit' : 'create');
+  readonly displayImageUrl = 
+    computed(() => this.productFormModel().imageUrl ? apiUrlMaker(this.productFormModel().imageUrl) : null);
 
-  ngOnInit() {
-    console.log(this.productForm().invalid());
-    
+  constructor() {
+    effect(() => {
+      this.setUpdateState();
+    });
+  }
+
+  ngOnInit() {    
   }
 
   saveProduct() {
@@ -30,9 +37,49 @@ export class ProductsFormComponent implements OnInit {
     } else {
       this.addProduct();
     }
+    this.clearForm()
   }
 
   addProduct() {
+    this.save.emit(this.buildFormData());
+    this.clearForm();
+  }
+  
+  updateProduct() {
+    this.saveEdittedProduct.emit(this.buildFormData());
+    this.clearForm();
+  }
+   cancelEdit() {
+    this.clearForm()
+  }
+
+  onFileSelected(event: Event | null) {
+    if (!event) return;
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.setImage(input.files[0]);
+    }
+  }
+
+  private setImage(file: File) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const url = e.target?.result as string;
+      this.productFormModel
+        .update(prev => ({ ...prev, image: file, imageUrl: url }));
+    };
+    reader.readAsDataURL(file);
+  }
+  
+  private setUpdateState(){
+    const editingProduct = this.editingProduct();
+    if (editingProduct) {
+      this.productFormModel.set({...editingProduct, image: null}); 
+    } else {
+      this.clearForm();
+    }
+  }
+  private buildFormData(): FormData {
     const formData = new FormData();
     formData.append('name', this.productFormModel().name);
     formData.append('description', this.productFormModel().description);
@@ -43,27 +90,10 @@ export class ProductsFormComponent implements OnInit {
     if (this.productFormModel().image) {
       formData.append('image', this.productFormModel().image as File);
     }
-    this.save.emit(formData);
+    return formData;
   }
-  
-  updateProduct() {
-    this.edit.emit(this.productFormModel());
-  }
-   cancelEdit() {
-    this.mode.set('create');
+  private clearForm() {
+    this.productForm().reset();
     this.productFormModel.set(initialProductFormModel);
-  }
-
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const url = e.target?.result as string;
-        this.productFormModel.update(prev => ({ ...prev, image: file, imageUrl: url }));
-      };
-      reader.readAsDataURL(file);
-    }
   }
 }
