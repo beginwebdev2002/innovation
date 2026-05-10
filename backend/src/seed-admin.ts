@@ -4,8 +4,6 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class SeedAdminService implements OnModuleInit {
-  private readonly logger = new Logger(SeedAdminService.name);
-
   constructor(private readonly prisma: PrismaService) {}
 
   async onModuleInit() {
@@ -13,17 +11,14 @@ export class SeedAdminService implements OnModuleInit {
   }
 
   private async seedAdmin() {
-    const adminEmail = 'admin@innovation.tj';
-    const adminPassword = 'innovation2026';
+    const adminEmail = process.env.ADMIN_EMAIL!;
+    const adminPassword = process.env.ADMIN_PASSWORD!;
 
     const existing = await this.prisma.user.findUnique({
       where: { email: adminEmail },
     });
 
-    if (existing) {
-      this.logger.log(`Admin user already exists: ${adminEmail}`);
-      return;
-    }
+    if (existing) return;
 
     const hashedPassword = await bcrypt.hash(adminPassword, 10);
 
@@ -34,7 +29,5 @@ export class SeedAdminService implements OnModuleInit {
         role: 'admin',
       },
     });
-
-    this.logger.log(`✅ Admin user created: ${adminEmail}`);
   }
 }
