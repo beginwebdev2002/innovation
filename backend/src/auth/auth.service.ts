@@ -1,14 +1,19 @@
+import * as bcrypt from 'bcrypt';
+
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UsersService } from '@/users/users.service';
+import { ConfigService } from '@nestjs/config';
+
+import { UsersService } from '@users/users.service';
+import { EnvironmentVariables } from '@config/env.interface';
 import { User, Prisma } from '@prisma/client';
-import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private configService: ConfigService<EnvironmentVariables, true>,
   ) {}
 
   async validateUser(
@@ -58,13 +63,20 @@ export class AuthService {
     const [at, rt] = await Promise.all([
       this.jwtService.signAsync(
         { sub: userId, email, role },
-        { secret: process.env.JWT_SECRET || 'access-secret', expiresIn: '7d' },
+        {
+          secret: this.configService.get('JWT_ACCESS_SECRET', { infer: true }),
+          expiresIn:
+            this.configService.get('JWT_ACCESS_EXPIRED', { infer: true }) ||
+            '1d',
+        },
       ),
       this.jwtService.signAsync(
         { sub: userId, email, role },
         {
-          secret: process.env.JWT_REFRESH_SECRET || 'refresh-secret',
-          expiresIn: '7d',
+          secret: this.configService.get('JWT_REFRESH_SECRET', { infer: true }),
+          expiresIn:
+            this.configService.get('JWT_REFRESH_EXPIRED', { infer: true }) ||
+            '7d',
         },
       ),
     ]);

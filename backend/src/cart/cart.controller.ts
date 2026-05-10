@@ -9,8 +9,10 @@ import {
   Request,
   ParseIntPipe,
 } from '@nestjs/common';
+
+import { JwtAuthGuard } from '@auth/guards/jwt-auth.guard';
+
 import { CartService } from './cart.service';
-import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard';
 import { AuthenticatedRequest, AddToCartDto } from './cart.models';
 
 @UseGuards(JwtAuthGuard)

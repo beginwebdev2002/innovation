@@ -16,11 +16,13 @@
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"],
-      "@prisma-client": ["generated/prisma"],
-      "auth/*": ["src/auth/*"],
-      "products/*": ["src/products/*"],
-      "users/*": ["src/users/*"],
-      "cart/*": ["src/cart/*"]
+      "@auth/*": ["src/auth/*"],
+      "@cart/*": ["src/cart/*"],
+      "@config/*": ["src/config/*"],
+      "@products/*": ["src/products/*"],
+      "@prisma/*": ["src/prisma/*"],
+      "@users/*": ["src/users/*"],
+      "@prisma-client/*": ["generated/prisma/*"]
     },
     "incremental": true,
     "skipLibCheck": true,

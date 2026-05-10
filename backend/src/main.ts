@@ -1,8 +1,11 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
-import { NestExpressApplication } from '@nestjs/platform-express';
 import * as bodyParser from 'body-parser';
+import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+
+import { EnvironmentVariables } from '@config/env.interface';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -18,8 +21,12 @@ async function bootstrap() {
     allowedHeaders: '*',
     maxAge: 3600,
   });
-  console.log('PORT: ', process.env.PORT);
 
-  await app.listen(process.env.PORT ?? 3000);
+  const configService =
+    app.get<ConfigService<EnvironmentVariables, true>>(ConfigService);
+  const port = configService.get<string>('PORT', { infer: true }) || 3000;
+  console.log('PORT: ', port);
+
+  await app.listen(port);
 }
 void bootstrap();

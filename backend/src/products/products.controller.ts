@@ -1,3 +1,6 @@
+import { extname } from 'path';
+
+import { diskStorage } from 'multer';
 import {
   Controller,
   Get,
@@ -13,13 +16,13 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
-import { ProductsService } from './products.service';
-import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard';
-import { RolesGuard } from '@/auth/guards/roles.guard';
-import { Roles } from '@/auth/roles.decorator';
+
+import { JwtAuthGuard } from '@auth/guards/jwt-auth.guard';
+import { RolesGuard } from '@auth/guards/roles.guard';
+import { Roles } from '@auth/roles.decorator';
 import { Role } from '@prisma/client';
+
+import { ProductsService } from './products.service';
 
 interface ProductCreateBodyDto {
   name: string;
