@@ -1,47 +1,29 @@
-import { extname } from 'path';
-
-import { diskStorage } from 'multer';
 import {
+  Body,
   Controller,
+  Delete,
   Get,
+  Param,
+  ParseIntPipe,
   Post,
   Put,
-  Delete,
-  Body,
-  Param,
-  UseGuards,
   Query,
-  ParseIntPipe,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 
 import { JwtAuthGuard } from '@auth/guards/jwt-auth.guard';
 import { RolesGuard } from '@auth/guards/roles.guard';
 import { Roles } from '@auth/roles.decorator';
 import { Role } from '@prisma/client';
+import { fileInterceptorOptions } from '@utils/file';
 
+import type {
+  ProductCreateBodyDto,
+  ProductUpdateBodyDto,
+} from './products.models';
 import { ProductsService } from './products.service';
-
-interface ProductCreateBodyDto {
-  name: string;
-  description: string;
-  price: string;
-  category?: string;
-  imageUrl?: string;
-  [key: string]: string | undefined;
-}
-
-interface ProductUpdateBodyDto {
-  name?: string;
-  description?: string;
-  price?: string;
-  category?: string;
-  imageUrl?: string;
-  [key: string]: string | undefined;
-}
-
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
@@ -64,57 +46,19 @@ export class ProductsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.admin)
   @Post()
-  @UseInterceptors(
-    FileInterceptor('image', {
-      storage: diskStorage({
-        destination: './public/uploads',
-        filename: (_req, file, cb) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          cb(null, uniqueSuffix + extname(file.originalname));
-        },
-      }),
-      fileFilter: (_req, file, cb) => {
-        if (!file.mimetype.match(/\/(jpg|jpeg|png|gif|webp)$/)) {
-          cb(new Error('Only image files are allowed'), false);
-        } else {
-          cb(null, true);
-        }
-      },
-      limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
-    }),
-  )
+  @UseInterceptors(fileInterceptorOptions('image'))
   create(
     @Body() data: ProductCreateBodyDto,
     @UploadedFile() file?: Express.Multer.File,
   ) {
-    const imageUrl = file ? `/uploads/${file.filename}` : undefined;
+    const imageUrl = file ? `/uploads/${file.filename}` : '';
     return this.productsService.create({ ...data, imageUrl });
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.admin)
   @Put(':id')
-  @UseInterceptors(
-    FileInterceptor('image', {
-      storage: diskStorage({
-        destination: './public/uploads',
-        filename: (_req, file, cb) => {
-          const uniqueSuffix =
-            Date.now() + '-' + Math.round(Math.random() * 1e9);
-          cb(null, uniqueSuffix + extname(file.originalname));
-        },
-      }),
-      fileFilter: (_req, file, cb) => {
-        if (!file.mimetype.match(/\/(jpg|jpeg|png|gif|webp)$/)) {
-          cb(new Error('Only image files are allowed'), false);
-        } else {
-          cb(null, true);
-        }
-      },
-      limits: { fileSize: 5 * 1024 * 1024 },
-    }),
-  )
+  @UseInterceptors(fileInterceptorOptions('image'))
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() data: ProductUpdateBodyDto,

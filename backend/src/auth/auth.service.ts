@@ -46,17 +46,28 @@ export class AuthService {
     return this.usersService.updateRefreshToken(userId, null);
   }
 
-  async refreshTokens(userId: number, rt: string) {
-    const user = await this.usersService.findById(userId);
-    if (!user || !user.refreshToken)
+  async refreshTokens(refreshToken: string) {
+    if (!refreshToken) throw new UnauthorizedException('Access Denied');
+    try {
+      const payload = await this.jwtService.verifyAsync<{ sub: number }>(
+        refreshToken,
+        {
+          secret: this.configService.get('JWT_REFRESH_SECRET', { infer: true }),
+        },
+      );
+      const user = await this.usersService.findById(payload.sub);
+      if (!user || !user.refreshToken)
+        throw new UnauthorizedException('Access Denied');
+
+      const rtMatches = await bcrypt.compare(refreshToken, user.refreshToken);
+      if (!rtMatches) throw new UnauthorizedException('Access Denied');
+
+      const tokens = await this.getTokens(user.id, user.email, user.role);
+      await this.usersService.updateRefreshToken(user.id, tokens.refresh_token);
+      return tokens;
+    } catch {
       throw new UnauthorizedException('Access Denied');
-
-    const rtMatches = await bcrypt.compare(rt, user.refreshToken);
-    if (!rtMatches) throw new UnauthorizedException('Access Denied');
-
-    const tokens = await this.getTokens(user.id, user.email, user.role);
-    await this.usersService.updateRefreshToken(user.id, tokens.refresh_token);
-    return tokens;
+    }
   }
 
   private async getTokens(userId: number, email: string, role: string) {

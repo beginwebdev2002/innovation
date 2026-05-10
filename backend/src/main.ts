@@ -12,7 +12,8 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService =
     app.get<ConfigService<EnvironmentVariables, true>>(ConfigService);
-  const ORIGIN = configService.get('ORIGIN', { infer: true });
+  const ORIGIN =
+    configService.get('ORIGIN', { infer: true }) || 'http://localhost:4200';
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.use(cookieParser());
   app.use(bodyParser.json({ limit: '20mb' }));

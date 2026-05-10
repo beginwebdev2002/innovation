@@ -4,23 +4,7 @@ import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '@prisma/prisma.service';
 
-interface ProductCreateDto {
-  name: string;
-  description: string;
-  price: string;
-  category?: string;
-  imageUrl?: string;
-  [key: string]: string | undefined;
-}
-
-interface ProductUpdateDto {
-  name?: string;
-  description?: string;
-  price?: string;
-  category?: string;
-  imageUrl?: string;
-  [key: string]: string | undefined;
-}
+import type { ProductCreateDto, ProductUpdateDto } from './products.models';
 
 @Injectable()
 export class ProductsService {
@@ -62,7 +46,22 @@ export class ProductsService {
   }
 
   async update(id: number, data: ProductUpdateDto) {
-    // If a new image is provided, delete the old one from disk
+    await this.updateImageUrl(id, data);
+    const { price, ...restData } = data;
+    return this.prisma.product.update({
+      where: { id },
+      data: {
+        ...restData,
+        ...(price !== undefined ? { price: parseFloat(price) } : {}),
+      },
+    });
+  }
+
+  remove(id: number) {
+    return this.prisma.product.delete({ where: { id } });
+  }
+
+  private async updateImageUrl(id: number, data: ProductUpdateDto) {
     if (data.imageUrl) {
       const existing = await this.prisma.product.findUnique({ where: { id } });
       if (existing?.imageUrl && existing.imageUrl !== data.imageUrl) {
@@ -76,17 +75,6 @@ export class ProductsService {
         });
       }
     }
-    const { price, ...restData } = data;
-    return this.prisma.product.update({
-      where: { id },
-      data: {
-        ...restData,
-        ...(price !== undefined ? { price: parseFloat(price) } : {}),
-      },
-    });
-  }
-
-  remove(id: number) {
-    return this.prisma.product.delete({ where: { id } });
+    return data;
   }
 }

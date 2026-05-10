@@ -11,8 +11,10 @@ import { AuthService } from '@features/auth/auth.service';
 })
 export class AppComponent implements OnInit {
   authService = inject(AuthService);
-  
+
   ngOnInit() {
+    let allCookies = document.cookie;
+    console.log(allCookies);
     if (sessionStorage.getItem('access_token')) {
       this.authService.getProfile().subscribe({
         error: () => {

@@ -10,26 +10,10 @@ import {
   UnauthorizedException,
   Res,
 } from '@nestjs/common';
-import type { Response } from 'express';
+import type { Response, Request as ExpressRequest } from 'express';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
-
-interface AuthRequest {
-  user: {
-    userId: number;
-    sub: number;
-    email: string;
-    role: string;
-    refreshToken: string;
-  };
-}
-
-interface SignupDto {
-  email: string;
-  password: string;
-  [key: string]: any;
-}
+import type { AuthRequest, SignupDto } from './auth.models';
 
 @Controller('auth')
 export class AuthController {
@@ -77,20 +61,20 @@ export class AuthController {
     return this.authService.logout(req.user.userId);
   }
 
-  @UseGuards(JwtRefreshGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   async refreshTokens(
-    @Request() req: AuthRequest,
+    @Request() req: ExpressRequest,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { refresh_token, ...result } = await this.authService.refreshTokens(
-      req.user.sub,
-      req.user.refreshToken,
-    );
+    const token = <string>req.cookies?.refresh_token;
+    if (!token) throw new UnauthorizedException('Access Denied');
+    const { refresh_token, ...result } =
+      await this.authService.refreshTokens(token);
     res.cookie('refresh_token', refresh_token, {
       httpOnly: true,
       secure: true,
+      maxAge: 60 * 24 * 60 * 60 * 1000, // 60 days
     });
     return result;
   }
