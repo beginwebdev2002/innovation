@@ -1,6 +1,5 @@
 import { AuthModule } from '@/auth/auth.module';
 import { CartModule } from '@/cart/cart.module';
-import { OrdersModule } from '@/orders/orders.module';
 import { PrismaModule } from '@/prisma/prisma.module';
 import { ProductsModule } from '@/products/products.module';
 import { UsersModule } from '@/users/users.module';
@@ -18,7 +17,6 @@ import { join } from 'path';
     UsersModule,
     ProductsModule,
     CartModule,
-    OrdersModule,
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), 'public'),
     }),

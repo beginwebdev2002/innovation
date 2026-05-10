@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '@/users/users.service';
+import { User, Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -10,27 +11,30 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(email: string, pass: string): Promise<any> {
+  async validateUser(
+    email: string,
+    pass: string,
+  ): Promise<Omit<User, 'password' | 'refreshToken'> | null> {
     const user = await this.usersService.findByEmail(email);
     if (user && (await bcrypt.compare(pass, user.password))) {
-      const { password, refreshToken, ...result } = user;
-      return result;
+      const { id, email, role, createdAt, updatedAt } = user;
+      return { id, email, role, createdAt, updatedAt };
     }
     return null;
   }
 
-  async signin(user: any) {
+  async signin(user: Omit<User, 'password' | 'refreshToken'>) {
     const tokens = await this.getTokens(user.id, user.email, user.role);
     await this.usersService.updateRefreshToken(user.id, tokens.refresh_token);
     return { ...tokens, user };
   }
 
-  async signup(data: any) {
+  async signup(data: Prisma.UserCreateInput) {
     const user = await this.usersService.create(data);
     const tokens = await this.getTokens(user.id, user.email, user.role);
     await this.usersService.updateRefreshToken(user.id, tokens.refresh_token);
-    const { password, refreshToken, ...result } = user;
-    return { ...tokens, user: result };
+    const { id, email, role, createdAt, updatedAt } = user;
+    return { ...tokens, user: { id, email, role, createdAt, updatedAt } };
   }
 
   async logout(userId: number) {

@@ -21,6 +21,24 @@ import { RolesGuard } from '@/auth/guards/roles.guard';
 import { Roles } from '@/auth/roles.decorator';
 import { Role } from '@prisma/client';
 
+interface ProductCreateBodyDto {
+  name: string;
+  description: string;
+  price: string;
+  category?: string;
+  imageUrl?: string;
+  [key: string]: string | undefined;
+}
+
+interface ProductUpdateBodyDto {
+  name?: string;
+  description?: string;
+  price?: string;
+  category?: string;
+  imageUrl?: string;
+  [key: string]: string | undefined;
+}
+
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
@@ -63,7 +81,10 @@ export class ProductsController {
       limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
     }),
   )
-  create(@Body() data: any, @UploadedFile() file?: Express.Multer.File) {
+  create(
+    @Body() data: ProductCreateBodyDto,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
     const imageUrl = file ? `/uploads/${file.filename}` : undefined;
     return this.productsService.create({ ...data, imageUrl });
   }
@@ -93,7 +114,7 @@ export class ProductsController {
   )
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() data: any,
+    @Body() data: ProductUpdateBodyDto,
     @UploadedFile() file?: Express.Multer.File,
   ) {
     const imageUrl = file ? `/uploads/${file.filename}` : undefined;

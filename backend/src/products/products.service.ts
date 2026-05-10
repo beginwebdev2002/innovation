@@ -3,6 +3,24 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { unlink } from 'fs';
 import { join } from 'path';
 
+interface ProductCreateDto {
+  name: string;
+  description: string;
+  price: string;
+  category?: string;
+  imageUrl?: string;
+  [key: string]: string | undefined;
+}
+
+interface ProductUpdateDto {
+  name?: string;
+  description?: string;
+  price?: string;
+  category?: string;
+  imageUrl?: string;
+  [key: string]: string | undefined;
+}
+
 @Injectable()
 export class ProductsService {
   constructor(private prisma: PrismaService) {}
@@ -35,13 +53,14 @@ export class ProductsService {
     return this.prisma.product.findUnique({ where: { id } });
   }
 
-  create(data: any) {
+  create(data: ProductCreateDto) {
+    const { price, ...restData } = data;
     return this.prisma.product.create({
-      data: { ...data, price: parseFloat(data.price) },
+      data: { ...restData, price: parseFloat(price) },
     });
   }
 
-  async update(id: number, data: any) {
+  async update(id: number, data: ProductUpdateDto) {
     // If a new image is provided, delete the old one from disk
     if (data.imageUrl) {
       const existing = await this.prisma.product.findUnique({ where: { id } });
@@ -56,12 +75,12 @@ export class ProductsService {
         });
       }
     }
-
+    const { price, ...restData } = data;
     return this.prisma.product.update({
       where: { id },
       data: {
-        ...data,
-        ...(data.price !== undefined ? { price: parseFloat(data.price) } : {}),
+        ...restData,
+        ...(price !== undefined ? { price: parseFloat(price) } : {}),
       },
     });
   }

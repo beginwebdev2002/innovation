@@ -15,7 +15,7 @@ export class CartComponent implements OnInit {
   cartService = inject(CartService);
   cart = signal<CartItem[]>([]);
   private getCartEndpoint = signal(apiUrlMaker('cart').href);
-  private checkoutEndpoint = signal(apiUrlMaker('orders/checkout').href);
+  private checkoutEndpoint = signal(apiUrlMaker('cart/checkout').href);
 
   ngOnInit() {
     this.loadCart();
