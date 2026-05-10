@@ -28,12 +28,13 @@ export class SigninComponent implements OnInit {
       this.signinForm().touched();
       return;
     }
-    this.authService.signin(this.signinForm().value()).subscribe({
+    this.authService.signin(this.signinForm().value())
+    .subscribe({
       next: () => {
         this.clearForm();
         this.router.navigate(['/'])
       },
-      error: (err: HttpErrorResponse) => alert(err.error.message)
+      error: (err: HttpErrorResponse) => 0
     });
   }
 

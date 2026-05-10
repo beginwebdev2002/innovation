@@ -8,7 +8,9 @@ import {
   HttpCode,
   HttpStatus,
   UnauthorizedException,
+  Res,
 } from '@nestjs/common';
+import type { Response } from 'express';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
@@ -35,31 +37,62 @@ export class AuthController {
 
   @Post('signin')
   @HttpCode(HttpStatus.OK)
-  async signin(@Body() body: Record<string, string>) {
+  async signin(
+    @Body() body: Record<string, string>,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const user = await this.authService.validateUser(body.email, body.password);
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    return this.authService.signin(user);
+    const { refresh_token, ...result } = await this.authService.signin(user);
+    res.cookie('refresh_token', refresh_token, {
+      httpOnly: true,
+      secure: true,
+    });
+    return result;
   }
 
   @Post('signup')
-  async signup(@Body() body: SignupDto) {
-    return this.authService.signup(body);
+  async signup(
+    @Body() body: SignupDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { refresh_token, ...result } = await this.authService.signup(body);
+    res.cookie('refresh_token', refresh_token, {
+      httpOnly: true,
+      secure: true,
+    });
+    return result;
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('logout')
   @HttpCode(HttpStatus.OK)
-  logout(@Request() req: AuthRequest) {
+  logout(
+    @Request() req: AuthRequest,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    res.clearCookie('refresh_token');
     return this.authService.logout(req.user.userId);
   }
 
   @UseGuards(JwtRefreshGuard)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
-  refreshTokens(@Request() req: AuthRequest) {
-    return this.authService.refreshTokens(req.user.sub, req.user.refreshToken);
+  async refreshTokens(
+    @Request() req: AuthRequest,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { refresh_token, ...result } = await this.authService.refreshTokens(
+      req.user.sub,
+      req.user.refreshToken,
+    );
+    res.cookie('refresh_token', refresh_token, {
+      httpOnly: true,
+      secure: true,
+    });
+    return result;
   }
 
   @UseGuards(JwtAuthGuard)

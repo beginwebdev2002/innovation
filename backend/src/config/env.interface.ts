@@ -7,4 +7,5 @@ export interface EnvironmentVariables {
   JWT_REFRESH_EXPIRED: string;
   ADMIN_EMAIL: string;
   ADMIN_PASSWORD: string;
+  ORIGIN: string;
 }

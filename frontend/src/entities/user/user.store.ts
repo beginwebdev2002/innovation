@@ -24,8 +24,7 @@ export const UserStore = signalStore(
       patchState(store, { user, isLoggedIn: !!user });
     },
     logout() {
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
+      sessionStorage.removeItem('access_token');
       patchState(store, { user: null, isLoggedIn: false });
     }
   }))

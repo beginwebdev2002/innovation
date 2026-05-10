@@ -13,11 +13,10 @@ export class AppComponent implements OnInit {
   authService = inject(AuthService);
   
   ngOnInit() {
-    if (localStorage.getItem('access_token')) {
+    if (sessionStorage.getItem('access_token')) {
       this.authService.getProfile().subscribe({
         error: () => {
-          // localStorage.removeItem('access_token');
-          // localStorage.removeItem('refresh_token');
+          // sessionStorage.removeItem('access_token');
         }
       });
     }

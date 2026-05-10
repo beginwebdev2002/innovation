@@ -15,7 +15,6 @@ export interface User {
 
 export interface AuthResponse {
   access_token: string;
-  refresh_token: string;
   user: User;
 }
 
@@ -29,8 +28,8 @@ export const initialSignUpModel: SignUpModel = {
 };
 
 export const initialSignInModel: SignInModel = {
-    email: '',
-    password: ''
+    email: 'admin@innovation.tj',
+    password: 'innovation2026'
 };
 
 export const signupValidationSchema = schema<SignUpModel>((user) => {

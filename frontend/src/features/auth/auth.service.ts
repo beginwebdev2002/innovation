@@ -14,27 +14,26 @@ export class AuthService {
   private profileEndpoint = signal(apiUrlMaker('auth/me').href);
 
   signin(credentials: SignInModel) {
-    return this.http.post<AuthResponse>(this.signinEndpoint(), credentials).pipe(
+    return this.http.post<AuthResponse>(this.signinEndpoint(), credentials, { withCredentials: true }).pipe(
       tap((res: AuthResponse) => {
-        localStorage.setItem('access_token', res.access_token);
-        localStorage.setItem('refresh_token', res.refresh_token);
+        sessionStorage.setItem('access_token', res.access_token);
         this.userStore.setUser(res.user);
       })
     );
   }
 
   signup(data: SignUpModel) {
-    return this.http.post<AuthResponse>(this.signupEndpoint(), data).pipe(
+    return this.http.post<AuthResponse>(this.signupEndpoint(), data, { withCredentials: true }).pipe(
       tap((res: AuthResponse) => {
-        localStorage.setItem('access_token', res.access_token);
-        localStorage.setItem('refresh_token', res.refresh_token);
+        sessionStorage.setItem('access_token', res.access_token);
         this.userStore.setUser(res.user);
       })
     );
   }
 
   getProfile() {
-    return this.http.get<User>(this.profileEndpoint()).pipe(
+    return this.http.get<User>(this.profileEndpoint(), { withCredentials: true })
+    .pipe(
       tap((user: User) => this.userStore.setUser(user))
     );
   }
