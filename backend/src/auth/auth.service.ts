@@ -13,7 +13,7 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-    private configService: ConfigService<EnvironmentVariables, true>,
+    private configService: ConfigService<EnvironmentVariables>,
   ) {}
 
   async validateUser(

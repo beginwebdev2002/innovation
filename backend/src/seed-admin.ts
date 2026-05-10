@@ -17,8 +17,10 @@ export class SeedAdminService implements OnModuleInit {
   }
 
   private async seedAdmin() {
-    const adminEmail = this.configService.get<string>('ADMIN_EMAIL');
-    const adminPassword = this.configService.get<string>('ADMIN_PASSWORD');
+    const adminEmail = this.configService.get('ADMIN_EMAIL', { infer: true });
+    const adminPassword = this.configService.get('ADMIN_PASSWORD', {
+      infer: true,
+    });
 
     if (!adminEmail || !adminPassword) {
       console.warn('ADMIN_EMAIL or ADMIN_PASSWORD is not set');
