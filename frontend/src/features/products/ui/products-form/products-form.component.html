@@ -16,7 +16,11 @@
       </div>
       <div class="mb-4">
         <label for="category" class="block mb-1">Категория</label>
-        <input id="category" [formField]="productForm.category" class="border p-2 rounded w-full" />
+        <select id="category" [formField]="productForm.category" class="border p-2 rounded w-full bg-white">
+          @for (cat of categories(); track cat) {
+            <option [value]="cat">{{ cat }}</option>
+          }
+        </select>
         @if(productForm.category().touched()) {
           <div class="error">
             @for (error of productForm.category().errors(); track error.kind) {

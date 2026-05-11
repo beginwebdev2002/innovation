@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, effect, input, OnInit, output, signal } from '@angular/core';
 import { form, FormField } from '@angular/forms/signals';
 import { ProductsApiService } from '@features/products/api/products-api.service';
-import { initialProductFormModel, Product, ProductFormModel, productValidationSchema } from '@features/products/models/products.model';
+import { initialProductFormModel, Product, ProductFormModel, productValidationSchema, PRODUCT_CATEGORIES } from '@features/products/models/products.model';
 import { apiUrlMaker } from '@shared/utils';
 
 @Component({
@@ -22,6 +22,7 @@ export class ProductsFormComponent implements OnInit {
   readonly displayImageUrl = 
     computed(() => this.productFormModel().imageUrl ? apiUrlMaker(this.productFormModel().imageUrl) : null);
   readonly imageFile = signal<File | null>(null);
+  categories = signal<string[]>(PRODUCT_CATEGORIES);
 
   constructor() {
     effect(() => {

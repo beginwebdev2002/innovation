@@ -1,5 +1,18 @@
 import { maxLength, min, required, schema } from "@angular/forms/signals";
 
+export enum ProductCategory {
+    Electronics = 'Электроника',
+    Clothing = 'Одежда',
+    Shoes = 'Обувь',
+    Accessories = 'Аксессуары',
+    Home = 'Для дома',
+    Beauty = 'Красота',
+    Sports = 'Спорт',
+    Food = 'Еда'
+}
+
+export const PRODUCT_CATEGORIES = Object.values(ProductCategory);
+
 export interface Product {
     id: number;
     name: string;
@@ -15,10 +28,10 @@ export interface ProductFormModel extends Omit<Product, 'id' | 'createdAt' | 'up
 }
 
 export const initialProductFormModel: ProductFormModel = {
-    name: 'IPhone 12 Pro',
-    price: 1200,
-    category: 'Electronics',
-    description: 'A great phone',
+    name: '',
+    price: 0,
+    category: ProductCategory.Electronics,
+    description: '',
     imageUrl: ''
 }
 
