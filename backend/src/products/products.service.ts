@@ -18,18 +18,12 @@ export class ProductsService {
   ) {
     return this.prisma.product.findMany({
       where: {
-        ...(category
-          ? { category: { equals: category, mode: 'insensitive' } }
-          : {}),
-        ...(search ? { name: { contains: search, mode: 'insensitive' } } : {}),
-        ...(minPrice || maxPrice
-          ? {
-              price: {
-                gte: minPrice ? +minPrice : 0,
-                lte: maxPrice ? +maxPrice : 9999999,
-              },
-            }
-          : {}),
+        category: { equals: category, mode: 'insensitive' },
+        name: { contains: search, mode: 'insensitive' },
+        price: {
+          gte: minPrice ? +minPrice : 0,
+          lte: maxPrice ? +maxPrice : 9999999,
+        },
       },
     });
   }
@@ -39,20 +33,29 @@ export class ProductsService {
   }
 
   create(data: ProductCreateDto) {
-    const { price, ...restData } = data;
+    const { price, category, description, imageUrl, name } = data;
     return this.prisma.product.create({
-      data: { ...restData, price: parseFloat(price) },
+      data: {
+        category,
+        description,
+        imageUrl,
+        name,
+        price: parseFloat(price),
+      },
     });
   }
 
   async update(id: number, data: ProductUpdateDto) {
     await this.updateImageUrl(id, data);
-    const { price, ...restData } = data;
+    const { price, category, description, imageUrl, name } = data;
     return this.prisma.product.update({
       where: { id },
       data: {
-        ...restData,
-        ...(price !== undefined ? { price: parseFloat(price) } : {}),
+        category,
+        description,
+        imageUrl,
+        name,
+        price: parseFloat(price ?? ''),
       },
     });
   }
