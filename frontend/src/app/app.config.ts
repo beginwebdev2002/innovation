@@ -1,8 +1,8 @@
-import { ApplicationConfig, provideZoneChangeDetection, provideZonelessChangeDetection } from '@angular/core';
-import { provideRouter, withHashLocation } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { ApplicationConfig, provideZonelessChangeDetection } from '@angular/core';
+import { provideRouter, withHashLocation } from '@angular/router';
+import { authInterceptor } from '@shared/interceptors';
 import { routes } from './app.routes';
-import { authInterceptor } from '@shared/interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [

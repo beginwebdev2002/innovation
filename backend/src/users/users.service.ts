@@ -23,7 +23,7 @@ export class UsersService {
   async create(data: Prisma.UserCreateInput) {
     const hashedPassword = await bcrypt.hash(
       data.password,
-      this.configService.get('HASH_SALT', { infer: true }),
+      +this.configService.get('HASH_SALT', { infer: true }),
     );
     return this.prisma.user.create({
       data: { ...data, password: hashedPassword },
@@ -35,7 +35,7 @@ export class UsersService {
     if (refreshToken) {
       hashedToken = await bcrypt.hash(
         refreshToken,
-        this.configService.get('HASH_SALT', { infer: true }),
+        +this.configService.get('HASH_SALT', { infer: true }),
       );
     }
     await this.prisma.user.update({

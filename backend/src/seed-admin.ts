@@ -35,7 +35,7 @@ export class SeedAdminService implements OnModuleInit {
 
     const hashedPassword = await bcrypt.hash(
       adminPassword,
-      this.configService.get('HASH_SALT', { infer: true }),
+      +this.configService.get('HASH_SALT', { infer: true }),
     );
 
     await this.prisma.user.create({

@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { HeaderComponent } from '@widgets/header/header.component';
-import { AuthService } from '@features/auth/auth.service';
+import { HeaderComponent } from '@widgets/header';
+import { AuthService } from '@features/auth';
 import { retry } from 'rxjs';
 
 @Component({

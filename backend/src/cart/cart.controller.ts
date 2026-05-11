@@ -10,7 +10,7 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 
-import { JwtAuthGuard } from '@auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '@auth/guards';
 
 import { CartService } from './cart.service';
 import { AuthenticatedRequest, AddToCartDto } from './cart.models';
