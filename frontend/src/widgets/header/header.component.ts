@@ -1,6 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { UserStore } from '@entities/user/user.store';
+import { AuthService } from '@features/auth';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -10,8 +12,11 @@ import { UserStore } from '@entities/user/user.store';
 })
 export class HeaderComponent {
   userStore = inject(UserStore);
-  
+  private authService = inject(AuthService);
+
   logout() {
-    this.userStore.logout();
+    this.authService.logout()
+      .pipe(finalize(() => this.userStore.logout()))
+      .subscribe();
   }
 }

@@ -23,13 +23,13 @@ export type SignUpModel = Omit<User, 'id' | 'role' | 'accessToken' | 'refreshTok
 export type SignInModel = Omit<User, 'id' | 'role' | 'accessToken' | 'refreshToken' | 'createdAt' | 'updatedAt'>;
 
 export const initialSignUpModel: SignUpModel = {
-    email: '',
-    password: ''
+  email: '',
+  password: ''
 };
 
 export const initialSignInModel: SignInModel = {
-    email: 'admin@innovation.tj',
-    password: 'innovation2026'
+  email: '',
+  password: ''
 };
 
 export const signupValidationSchema = schema<SignUpModel>((user) => {
