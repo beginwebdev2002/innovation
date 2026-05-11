@@ -21,6 +21,11 @@
           }
           <p class="text-gray-600 flex-grow text-sm">{{product.description}}</p>
           <p class="text-xl font-bold my-2">{{product.price | currency}}</p>
+          @if (product.updatedAt !== product.createdAt) {
+            <p class="text-xs text-gray-500 mb-1">посл.обнов: {{product.updatedAt | date: 'dd.MM.yyyy'}}</p>
+          } @else {
+            <p class="text-xs text-gray-500 mb-1">создан: {{product.createdAt | date: 'dd.MM.yyyy'}}</p>
+          }
           @if (userStore.isLoggedIn()) {
             <button (click)="addToCart(product.id)" class="bg-blue-500 text-white py-2 rounded mt-2 hover:bg-blue-600 transition">В корзину</button>
           }

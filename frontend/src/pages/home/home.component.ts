@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Product, ProductsApiService } from '@features/products';
 import { CartService } from '@features/cart';
 import { UserStore } from '@entities/user/user.store';
@@ -9,7 +9,7 @@ import { apiUrlMaker } from '@shared/utils';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CurrencyPipe],
+  imports: [CurrencyPipe, DatePipe],
   providers: [ProductsApiService, CartService],
   templateUrl: './home.component.html'
 })
