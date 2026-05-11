@@ -23,7 +23,7 @@ export class AppComponent implements OnInit {
       .pipe(
         retry({ 
           count: 5,
-          delay: 500
+          delay: 100
         })
       )
       .subscribe({

@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, retry } from 'rxjs';
 import { environment } from '@environments/environment';
 import { Product } from '@features/products/models/products.model';
 
@@ -9,18 +9,22 @@ export class ProductsApiService {
   private http = inject(HttpClient);
 
   get(url: string, params?: Record<string, string | number | boolean | readonly (string | number | boolean)[]>): Observable<Product[]> {
-    return this.http.get<Product[]>(`${environment.apiUrl}/${url}`, { params }); 
+    return this.http.get<Product[]>(`${environment.apiUrl}/${url}`, { params })
+    .pipe(retry({ count: 5, delay: 500 })); 
   }
 
   post(url: string, body: FormData): Observable<Product> { 
-    return this.http.post<Product>(`${environment.apiUrl}/${url}`, body); 
+    return this.http.post<Product>(`${environment.apiUrl}/${url}`, body)
+    .pipe(retry({ count: 5, delay: 500 })); 
   }
 
   put(url: string, body: FormData): Observable<Product> { 
-    return this.http.put<Product>(`${environment.apiUrl}/${url}`, body); 
+    return this.http.put<Product>(`${environment.apiUrl}/${url}`, body)
+    .pipe(retry({ count: 5, delay: 500 })); 
   }
 
   delete(url: string): Observable<Product> { 
-    return this.http.delete<Product>(`${environment.apiUrl}/${url}`); 
+    return this.http.delete<Product>(`${environment.apiUrl}/${url}`) 
+    .pipe(retry({ count: 5, delay: 500 })); 
   }
 }
