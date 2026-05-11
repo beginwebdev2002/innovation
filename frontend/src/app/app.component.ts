@@ -14,8 +14,12 @@ export class AppComponent implements OnInit {
   authService = inject(AuthService);
 
   ngOnInit() {
-    if (sessionStorage.getItem('access_token')) {
-      this.authService.getProfile()
+    this.authorization();
+  }
+
+  private authorization() {
+    const token = sessionStorage.getItem('access_token');
+    this.authService.getProfile()
       .pipe(
         retry({ 
           count: 5,
@@ -27,6 +31,5 @@ export class AppComponent implements OnInit {
           sessionStorage.removeItem('access_token');
         }
       });
-    }
   }
 }
