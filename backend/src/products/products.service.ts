@@ -57,7 +57,14 @@ export class ProductsService {
     });
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+    const existing = await this.prisma.product.findUnique({ where: { id } });
+    if (existing?.imageUrl) {
+      const oldFilePath = join(process.cwd(), 'public', existing.imageUrl);
+      unlink(oldFilePath, (err) => {
+        if (err) console.warn(err.message);
+      });
+    }
     return this.prisma.product.delete({ where: { id } });
   }
 
@@ -67,11 +74,7 @@ export class ProductsService {
       if (existing?.imageUrl && existing.imageUrl !== data.imageUrl) {
         const oldFilePath = join(process.cwd(), 'public', existing.imageUrl);
         unlink(oldFilePath, (err) => {
-          if (err)
-            console.warn(
-              `Could not delete old image: ${oldFilePath}`,
-              err.message,
-            );
+          if (err) console.warn(err.message);
         });
       }
     }
